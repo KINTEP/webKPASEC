@@ -93,7 +93,6 @@ h11==0.12.0
 h5py==2.10.0
 HeapDict==1.0.1
 html5lib @ file:///tmp/build/80754af9/html5lib_1593446221756/work
-idna @ file:///tmp/build/80754af9/idna_1593446292537/work
 image==1.5.33
 imageio @ file:///tmp/build/80754af9/imageio_1594161405741/work
 imagesize==1.2.0
