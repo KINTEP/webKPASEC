@@ -1,0 +1,196 @@
+
+{% extends "bootstrap.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Income Statement</title>
+	<script src="{{url_for('static', filename = 'js/table2excel.js')}}"></script>
+</head>
+<style type="text/css">
+	body{
+     background: #AED6F1;
+     overflow-y: scroll;
+	}
+	.narv{
+		background: white;
+		width: 80vw;
+		height: 100vh;
+		border-radius: 5px;
+		margin-top: 5vh;
+		margin-left: 10vw;
+	}
+	.narv ul {
+		margin-left: 2.5vw;
+	}
+	.narv ul input{
+		width: 6vw;
+	}
+
+	table tr th{
+		border: 1px solid black;
+	}
+	table tr td{
+		border: 1px solid black;
+	}
+	table{
+		width: 70vw;
+		margin-left: 5vw;
+		margin-top: -1vw;
+	}
+	@media(max-width: 900px){
+
+     body{
+     background: #AED6F1;
+     overflow-y: scroll;
+	}
+     .narv{
+		background: white;
+		width: 92%;
+		height: 100%;
+		border-radius: 5px;
+		margin-top: 5vh;
+		margin-left: 4vw;
+	}
+	table{
+		width: 92%;
+		margin-left: 2vw;
+		margin-top: -1vw;
+	}
+	.narv ul {
+		margin-left: 0vw;
+	}
+
+    .narv ul input{
+		width: 12vw;
+	}
+
+	}
+	@media print{
+		input, header {
+			display: none;
+		}
+	}
+</style>
+<body>
+
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			    <a class="navbar-brand" href="#">KPASEC P.T.A</a>
+			    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+			      <span class="navbar-toggler-icon"></span>
+			    </button>
+			    
+			    	
+				<div class="collapse navbar-collapse" id="navbarText">
+			      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+			        <li class="nav-item">
+			          <a class="nav-link active " aria-current="page" href="{{url_for('accountant_dashboard')}}" id="dash">Dashboard</a>
+			        </li>
+			        <li class="nav-item d-flex">
+			          <a class="nav-link" href="#" id="lis">Classes</a>
+			        </li>
+			        <li class="nav-item">
+			          <a class="nav-link " href="#" id="new-class">New-Class</a>
+			        </li>
+			      </ul>
+
+			      <span class="navbar-text" >
+			      	<a href="{{url_for('account')}}" class="nn">{{current_user.username}}</a>
+			      	<a href="{{url_for('logout')}}">Logout</a>
+			      </span>
+			 
+			    </div>
+			</nav>
+
+	</header>
+
+	 <div class="narv">
+
+		<div class="income">
+		<h3 style="text-align: center;padding-top: 5vh;padding-bottom: 2vh;">{{category}} Income & Expenditure Statement for {{start}} to {{end}}</h3>
+	    </div>
+		<ul>
+			<input type="button" name="excel" value="EXCEL" onclick="exporttoexcell()">
+			<input type="button" name="print" value="PRINT" onclick="print_content()">
+		</ul>
+
+			<table id="table1">
+				<tr>
+					<th>#.</th>
+					<th>Date</th>
+					<th>Details</th>
+					<th>Debit</th>
+					<th>Credit</th>
+					<th>Balance</th>
+
+				</tr>
+				<tr class="fw-bold">
+					<td></td>
+					<td >INCOMES</td>
+					<td></td>
+					<td>GHC</td>
+					<td>GHC</td>
+					<td>GHC</td>
+				</tr>
+				{% set len1 = incomes | length %}
+				{% for income in incomes %}
+				<tr>
+					<td>{{loop.index}}</td>
+					<td>{{income.date.date()}}</td>
+					<td>{{category}} Income</td>
+					<td></td>
+					<td>{{income.amount | currencyFormat}}</td>
+					<td>{{cums[loop.index - 1] | currencyFormat}}</td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<td></td>
+					<td class="fw-bold">EXPENSES</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				{% for expense in expenses %}
+				<tr>
+					<td>{{loop.index}}</td>
+					<td>{{expense.date.date()}}</td>
+					<td>{{expense.item}}</td>
+					<td>{{expense.totalcost | currencyFormat }}</td>
+					<td></td>
+					<td>{{cums[len1 + loop.index - 1] | currencyFormat }}</td>
+				</tr>
+				{% endfor %}
+
+				<tr>
+					<td style="border: 0px solid transparent;"></td>
+					<td class="fw-bold">Surplus (Deficit)</td>
+					<td></td>
+					<td>{{sum2 | currencyFormat}}</td>
+					<td>{{sum1 | currencyFormat}}</td>
+					<td style="font-style: oblique; padding-left: 0%;" class="bg-warning fw-bold">{{cums[-1] | currencyFormat }}</td>
+					
+				</tr>
+
+			</table><br>
+		</div><br>
+		
+
+
+</body>
+
+<script type="text/javascript">
+	function print_content() {
+		window.print()
+	}
+
+	function exporttoexcell() {
+		idx = document.getElementById("table1")
+		t2exc = new Table2Excel();
+		t2exc.export(idx)
+	}
+</script>
+</html>
+{% endblock %}
